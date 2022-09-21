@@ -64,16 +64,45 @@ const deletePhoto = async (req, res) => {
 };
 
 //get all photos
-const getAllPhotos = async(req, res) => {
+const getAllPhotos = async (req, res) => {
+  const photos = await Photo.find({})
+    .sort([["createdAt", -1]])
+    .exec();
 
-    const photos = await Photo.find({}).sort([["createdAt", -1]]).exec()
+  return res.status(200).json(photos);
+};
 
-    return res.status(200).json(photos)
+//get user photos
+const getUserPhotos = async (req, res) => {
+  const { id } = req.params;
+  const photos = await Photo.find({ userId: id })
+    .sort([["createdAt", -1]])
+    .exec();
+
+  return res.status(200).json(photos);
+};
+
+//get photo by id
+const getPhotoById = async (req, res) => {
+
+    const {id} = req.params
+
+    const photo = await Photo.findById(mongoose.Types.ObjectId(id))
+
+    //check if photo exists
+    if(!photo){
+        res.status(404).json({errors: ["Foto não encontrada."]})
+        return
+    }
+
+    res.status(200).json(photo)
 
 }
 
 module.exports = {
   insertPhoto,
   deletePhoto,
-  getAllPhotos
+  getAllPhotos,
+  getUserPhotos,
+  getPhotoById
 };
