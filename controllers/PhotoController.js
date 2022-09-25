@@ -173,7 +173,7 @@ const likePhoto = async (req, res) => {
 const commentPhoto = async (req, res) => {
 
   const { id } = req.params;
-  
+
   const { comment } = req.body;
 
   const reqUser = req.user;
@@ -206,6 +206,18 @@ const commentPhoto = async (req, res) => {
   });
 };
 
+// Searchh phhotos by title
+
+const searchPhotos = async(req, res) => {
+
+  const {q} = req.query
+
+  const photos = await Photo.find({title: new RegExp(q, "i")}).exec()
+
+  res.status(200).json(photos)
+
+}
+
 module.exports = {
   insertPhoto,
   deletePhoto,
@@ -214,5 +226,6 @@ module.exports = {
   getPhotoById,
   updatePhoto,
   likePhoto,
-  commentPhoto
+  commentPhoto,
+  searchPhotos
 };
